@@ -3,7 +3,7 @@ from flaskext.mysql import MySQL
 import pymysql
  
 app = Flask(__name__)
-#app.secret_key = "Cairocoders-Ednalan"
+app.secret_key = "qZdNHdse/IMs2JY9+AnIO4ksMbC3E++rEDCLUULI"
   
 mysql = MySQL()
    
