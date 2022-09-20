@@ -1,23 +1,44 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from flaskext.mysql import MySQL
-import pymysql
+from pymysql import connections
+import os
+import boto3
+from config import *
+
+app = Flask(__name__)
+
+bucket = custombucket
+region = customregion
+
+db_conn = connections.Connection(
+    host=customhost,
+    port=3306,
+    user=customuser,
+    password=custompass,
+    db=customdb
+
+)
+output = {}
+table = 'employee'
  
 app = Flask(__name__)
 app.secret_key = "qZdNHdse/IMs2JY9+AnIO4ksMbC3E++rEDCLUULI"
   
-mysql = MySQL()
    
-# MySQL configurations
-app.config['MYSQL_DATABASE_USER'] = 'aws_user'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Bait3273'
-app.config['MYSQL_DATABASE_DB'] = 'employee'
-app.config['MYSQL_DATABASE_HOST'] = 'employee.crhpyun5diaf.us-east-1.rds.amazonaws.com'
-mysql.init_app(app)
+db_conn = connections.Connection(
+    host=customhost,
+    port=3306,
+    user=customuser,
+    password=custompass,
+    db=customdb
+
+)
+output = {}
+table = 'employee'
  
 @app.route('/')
 def Index():
-    conn = mysql.connect()
-    cur = conn.cursor(pymysql.cursors.DictCursor)
+    
+    cur = db_conn.cursor()
  
     cur.execute('SELECT * FROM employee')
     data = cur.fetchall()
@@ -27,8 +48,8 @@ def Index():
  
 @app.route('/add_contact', methods=['POST'])
 def add_employee():
-    conn = mysql.connect()
-    cur = conn.cursor(pymysql.cursors.DictCursor)
+    
+    cur = db_conn.cursor()
     if request.method == 'POST':
         fullname = request.form['fullname']
         phone = request.form['phone']
@@ -40,8 +61,8 @@ def add_employee():
  
 @app.route('/edit/<id>', methods = ['POST', 'GET'])
 def get_employee(id):
-    conn = mysql.connect()
-    cur = conn.cursor(pymysql.cursors.DictCursor)
+    
+    cur = db_conn.cursor()
   
     cur.execute('SELECT * FROM employee WHERE id = %s', (id))
     data = cur.fetchall()
@@ -70,8 +91,8 @@ def update_employee(id):
  
 @app.route('/delete/<string:id>', methods = ['POST','GET'])
 def delete_employee(id):
-    conn = mysql.connect()
-    cur = conn.cursor(pymysql.cursors.DictCursor)
+    
+    cur = db_conn.cursor()
   
     cur.execute('DELETE FROM employee WHERE id = {0}'.format(id))
     conn.commit()
