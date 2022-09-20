@@ -80,5 +80,4 @@ def delete_employee(id):
  
 # starting the app
 if __name__ == "__main__":
-    app.run(port=3000, debug=True)
-</string:id></id></id>
+    app.run(host='0.0.0.0', port=80, debug=True)
